@@ -35,14 +35,14 @@ public enum LevelKnowledgeToUnlock
 
 public enum ObstacleType
 {
-    a,
-    b,
-    c
+    ObstA,
+    ObstB,
+    ObstC
 }
 
 public enum CollectibleType
 {
-    a,
+    EnergyPack,
     b,
     c
 }
@@ -50,7 +50,9 @@ public enum CollectibleType
 public enum MovementType
 {
     straight,
-    sin
+    sinV,
+    sinH,
+    orbit
 }
 
 

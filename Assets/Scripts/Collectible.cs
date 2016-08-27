@@ -5,5 +5,5 @@ using System.Collections;
 public class Collectible
 {
     public Transform position;
-    public ObstacleType type;
+    public CollectibleType type;
 }
