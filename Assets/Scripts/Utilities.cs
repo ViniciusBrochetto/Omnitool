@@ -7,6 +7,7 @@ public class Buttons
     public static string Move_Horizontal = "Horizontal";
     public static string Move_Vertical = "Vertical";
     public static string Pause = "Cancel";
+    public static string Teleport = "Teleport";
 }
 
 public enum GameState
@@ -30,4 +31,31 @@ public enum LevelKnowledgeToUnlock
     level2 = 100,
     level3 = 200,
     level4 = 400
+}
+
+public enum ObstacleType
+{
+    a,
+    b,
+    c
+}
+
+public enum CollectibleType
+{
+    a,
+    b,
+    c
+}
+
+public enum MovementType
+{
+    straight,
+    sin
+}
+
+
+public class Tags
+{
+    public static string EnergyPack = "EnergyPack";
+    public static string Obstacle = "Obstacle";
 }

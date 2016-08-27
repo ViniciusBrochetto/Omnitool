@@ -19,7 +19,7 @@ public class GameController : MonoBehaviour
             instance = this;
 
             //Initialization
-            gameState = GameState.InMenus;
+            gameState = GameState.Playing;
             playerKnowledge = 0;
         }
         else
