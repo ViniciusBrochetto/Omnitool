@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     public TeleporterController teleportController;
 
     //UI
-    public Slider sldEnergy;
+    public Image imgEnergy;
 
     void Start()
     {
@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour
                 //TODO -- ENDGAME
             }
 
-            sldEnergy.value = Mathf.Min(energy / maxEnergy, 1f);
+            imgEnergy.fillAmount = Mathf.Min(energy / maxEnergy, 1f);
 
             InputHandler();
         }
@@ -119,13 +119,21 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetButtonUp(Buttons.Teleport))
             {
-                Time.timeScale = 1f;
-                transform.position = teleportController.transform.position;
+                anmEngineBack.SetBool("BurningBack", false);
+                anmEngineBottom1.SetBool("BurningBack", false);
+                anmEngineBottom2.SetBool("BurningBack", false);
+                anmPlayer.SetTrigger("Teleport");
                 teleportController.Deactivate();
-                isTeleporting = false;
-                cGravity.freezeMovement = false;
+                Time.timeScale = 1f;
             }
         }
+    }
+
+    public void EndTeleport()
+    {
+        isTeleporting = false;
+        transform.position = teleportController.transform.position;
+        cGravity.freezeMovement = false;
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -139,6 +147,9 @@ public class PlayerController : MonoBehaviour
         else if (other.tag == Tags.EnergyPack)
         {
             energy += energyPackGain;
+
+            energy = Mathf.Min(energy, maxEnergy);
+
             Destroy(other.gameObject);
             //TODO - Energy Effects
         }
