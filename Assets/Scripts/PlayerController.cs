@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     public float damageEnergyConsumption;
     public float energyPackGain;
 
-    //public Transform engineAxis;
+    public ParticleSystem ptclDamage;
 
     //Animators
     public Animator anmPlayer, anmEngineBack, anmEngineBottom1, anmEngineBottom2;
@@ -143,6 +143,9 @@ public class PlayerController : MonoBehaviour
             energy -= damageEnergyConsumption;
             Destroy(other.gameObject);
             //TODO - Damage Effects
+
+            CameraShake.instance.RequestShake(1f, .5f, true);
+            ptclDamage.Play();
         }
         else if (other.tag == Tags.EnergyPack)
         {

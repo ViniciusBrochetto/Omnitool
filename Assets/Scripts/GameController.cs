@@ -11,7 +11,7 @@ public class GameController : MonoBehaviour
     public int levelSelected = -1;
 
 
-    void Start()
+    void Awake()
     {
         if (instance == null)
         {

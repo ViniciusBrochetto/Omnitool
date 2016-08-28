@@ -1,0 +1,78 @@
+fileFormatVersion: 2
+guid: e4be3bafe56f9a547a9401422f7fb17e
+timeCreated: 1472354968
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Egito-1-2_0
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 256
+  textureSettings:
+    filterMode: 1
+    aniso: 1
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 300
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: Egito-1-2_0
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 93
+        width: 809
+        height: 564
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 7.100006, y: 54.6}
+        - {x: 3.100006, y: 57.6}
+        - {x: -2.899994, y: 57.6}
+        - {x: -75.899994, y: -43.4}
+        - {x: -80.899994, y: -53.4}
+        - {x: -80.899994, y: -56.4}
+        - {x: 82.100006, y: -56.4}
+        - {x: 82.100006, y: -53.4}
+        - {x: 80.100006, y: -48.4}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
