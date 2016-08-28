@@ -7,8 +7,8 @@ public class CustomGravity : MonoBehaviour
     public float gravityAccel = 9.8f;
 
     private float gravityCenter;
-    private float speedV;
-    private float speedH;
+    public float speedV;
+    public float speedH;
 
     void Start()
     {
@@ -35,8 +35,8 @@ public class CustomGravity : MonoBehaviour
     {
         if (!freezeMovement && GameController.instance.gameState == GameState.Playing)
         {
-            Vector3 topLeft = Camera.main.ViewportToWorldPoint(new Vector3(0.05f, 0.2f, 0f));
-            Vector3 topLeftMax = Camera.main.ViewportToWorldPoint(new Vector3(0.05f, 0.05f, 0f));
+            Vector3 topLeft = Camera.main.ViewportToWorldPoint(new Vector3(0.15f, 0.2f, 0f));
+            Vector3 topLeftMax = Camera.main.ViewportToWorldPoint(new Vector3(0.15f, 0.05f, 0f));
             Vector3 bottomRight = Camera.main.ViewportToWorldPoint(new Vector3(0.95f, 0.8f, 0f));
             Vector3 bottomRightMax = Camera.main.ViewportToWorldPoint(new Vector3(0.95f, 0.95f, 0f));
 
@@ -70,6 +70,8 @@ public class CustomGravity : MonoBehaviour
                     speedV = 0f;
                 }
             }
+
+            speedH = Mathf.Lerp(speedH, -0.05f, Time.deltaTime * 2f);
 
             if (transform.position.x + speedH > bottomRight.x || transform.position.x + speedH < topLeft.x)
                 speedH = 0f;

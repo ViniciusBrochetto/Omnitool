@@ -33,13 +33,13 @@ public class LevelPartController : MonoBehaviour
     {
         foreach (Obstacle o in obstacles)
         {
-            GameObject g = (GameObject)Instantiate(Resources.Load("ArtContent/Prefabs/" + o.type.ToString()), o.position.position, Quaternion.identity);
+            GameObject g = (GameObject)Instantiate(Resources.Load("Prefabs/" + o.type.ToString()), o.position.position, Quaternion.identity);
             g.transform.parent = transform;
         }
 
         foreach (Collectible c in collectibles)
         {
-            GameObject g = (GameObject)Instantiate(Resources.Load("ArtContent/Prefabs/" + c.type.ToString()), c.position.position, Quaternion.identity);
+            GameObject g = (GameObject)Instantiate(Resources.Load("Prefabs/" + c.type.ToString()), c.position.position, Quaternion.identity);
             g.transform.parent = transform;
         }
     }

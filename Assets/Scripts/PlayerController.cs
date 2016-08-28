@@ -20,7 +20,12 @@ public class PlayerController : MonoBehaviour
     public float damageEnergyConsumption;
     public float energyPackGain;
 
-    [Range(0f,1f)]
+    //public Transform engineAxis;
+
+    //Animators
+    public Animator anmPlayer, anmEngineBack, anmEngineBottom1, anmEngineBottom2;
+
+    [Range(0f, 1f)]
     public float timeSlowdown;
     public TeleporterController teleportController;
 
@@ -66,7 +71,7 @@ public class PlayerController : MonoBehaviour
                 move.y = v * vSpeed * Time.deltaTime;
             }
 
-            if (Input.GetButton(Buttons.Move_Horizontal))
+            if (Input.GetAxis(Buttons.Move_Horizontal) > 0)
             {
                 float h = Input.GetAxis(Buttons.Move_Horizontal);
                 move.x = h * Time.deltaTime * hSpeed;
@@ -84,6 +89,30 @@ public class PlayerController : MonoBehaviour
             else
             {
                 cGravity.AddForce(move.x, move.y);
+            }
+
+            if (Input.GetAxis(Buttons.Move_Horizontal) > 0)
+            {
+                //float AngleRad = Mathf.Atan2(Input.GetAxis(Buttons.Move_Vertical), Input.GetAxis(Buttons.Move_Horizontal));
+                //float AngleDeg = (180 / Mathf.PI) * AngleRad;
+                //engineAxis.transform.rotation = Quaternion.Lerp(engineAxis.transform.rotation, Quaternion.Euler(0, 0, AngleDeg), Time.deltaTime * 10f);
+
+                anmEngineBack.SetBool("BurningBack", true);
+            }
+            else
+            {
+                anmEngineBack.SetBool("BurningBack", false);
+            }
+
+            if (Input.GetAxis(Buttons.Move_Vertical) > 0)
+            {
+                anmEngineBottom1.SetBool("BurningBack", true);
+                anmEngineBottom2.SetBool("BurningBack", true);
+            }
+            else
+            {
+                anmEngineBottom1.SetBool("BurningBack", false);
+                anmEngineBottom2.SetBool("BurningBack", false);
             }
         }
         else
