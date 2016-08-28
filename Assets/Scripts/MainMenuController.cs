@@ -4,19 +4,19 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
+    public Animator anmMenus;
+
+    void Update()
+    {
+        if (Input.anyKey)
+        {
+            anmMenus.SetTrigger("End");
+        }
+    }
+
     public void StartGame()
     {
+        GameController.instance.gameState = GameState.InMenus;
         SceneManager.LoadScene(Scenes.LevelSelection);
-    }
-
-    public void ContinueGame()
-    {
-        GameController.SetGameState(GameState.Playing);
-        SceneManager.LoadScene(Scenes.MainGame);
-    }
-
-    public void ExitGame()
-    {
-        Application.Quit();
     }
 }

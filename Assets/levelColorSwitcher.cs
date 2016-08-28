@@ -73,7 +73,5 @@ public class levelColorSwitcher : MonoBehaviour
 
             yield return new WaitForSeconds(switchTime);
         }
-
-        yield return null;
     }
 }

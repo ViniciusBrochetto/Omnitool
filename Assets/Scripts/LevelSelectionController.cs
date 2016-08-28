@@ -26,6 +26,7 @@ public class LevelSelectionController : MonoBehaviour
 
     public void LoadLevel(int level)
     {
+        GameController.instance.gameState = GameState.Playing;
         GameController.instance.LoadLevel(level);
     }
 
