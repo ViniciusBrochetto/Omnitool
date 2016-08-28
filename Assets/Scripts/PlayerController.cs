@@ -20,7 +20,12 @@ public class PlayerController : MonoBehaviour
     public float damageEnergyConsumption;
     public float energyPackGain;
 
+    public AudioSource audioCrash1;
+    public AudioSource audioCrash2;
+    public AudioSource audioWarp;
+
     public ParticleSystem ptclDamage;
+    public GameObject ptclRocks;
 
     //Animators
     public Animator anmPlayer, anmEngineBack, anmEngineBottom1, anmEngineBottom2;
@@ -31,11 +36,14 @@ public class PlayerController : MonoBehaviour
 
     //UI
     public Image imgEnergy;
+    public Image imgKnowledge;
 
     void Start()
     {
         isAlive = true;
         cGravity = GetComponent<CustomGravity>();
+
+        ptclDamage.randomSeed = 0;
     }
 
     void Update()
@@ -54,6 +62,7 @@ public class PlayerController : MonoBehaviour
             }
 
             imgEnergy.fillAmount = Mathf.Min(energy / maxEnergy, 1f);
+            imgKnowledge.fillAmount = Mathf.Min(GameController.instance.playerKnowledge / (int)LevelKnowledgeToUnlock.level1);
 
             InputHandler();
         }
@@ -125,6 +134,8 @@ public class PlayerController : MonoBehaviour
                 anmPlayer.SetTrigger("Teleport");
                 teleportController.Deactivate();
                 Time.timeScale = 1f;
+
+                audioWarp.PlayOneShot(audioWarp.clip);
             }
         }
     }
@@ -145,7 +156,13 @@ public class PlayerController : MonoBehaviour
             //TODO - Damage Effects
 
             CameraShake.instance.RequestShake(1f, .5f, true);
+
             ptclDamage.Play();
+            GameObject g = (GameObject)Instantiate(ptclRocks, other.transform.position, ptclRocks.transform.rotation);
+            g.SetActive(true);
+
+            audioCrash1.PlayOneShot(audioCrash1.clip);
+            audioCrash2.PlayOneShot(audioCrash2.clip);
         }
         else if (other.tag == Tags.EnergyPack)
         {

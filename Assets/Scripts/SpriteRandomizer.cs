@@ -4,35 +4,43 @@ using System.Collections;
 public class SpriteRandomizer : MonoBehaviour
 {
     SpriteRenderer spRenderer;
+    public bool obstacle;
 
     void Awake()
     {
         spRenderer = GetComponent<SpriteRenderer>();
 
-        switch (GameController.instance.levelSelected)
+        if (!obstacle)
         {
-            case 1:
-                spRenderer.sprite = Resources.Load<Sprite>(SpritePaths.getRandomLV1());
-                break;
-            case 2:
-                spRenderer.sprite = Resources.Load<Sprite>(SpritePaths.getRandomLV2());
-                break;
-            case 3:
-                spRenderer.sprite = Resources.Load<Sprite>(SpritePaths.getRandomLV3());
-                break;
-            case 4:
-                spRenderer.sprite = Resources.Load<Sprite>(SpritePaths.getRandomLV4());
-                break;
-            default:
-                spRenderer.sprite = Resources.Load<Sprite>(SpritePaths.getRandomLV1());
-                break;
+            switch (GameController.instance.levelSelected)
+            {
+                case 1:
+                    spRenderer.sprite = Resources.Load<Sprite>(SpritePaths.getRandomLV1());
+                    break;
+                case 2:
+                    spRenderer.sprite = Resources.Load<Sprite>(SpritePaths.getRandomLV2());
+                    break;
+                case 3:
+                    spRenderer.sprite = Resources.Load<Sprite>(SpritePaths.getRandomLV3());
+                    break;
+                case 4:
+                    spRenderer.sprite = Resources.Load<Sprite>(SpritePaths.getRandomLV4());
+                    break;
+                default:
+                    spRenderer.sprite = Resources.Load<Sprite>(SpritePaths.getRandomLV1());
+                    break;
+            }
+        }
+        else
+        {
+            spRenderer.sprite = Resources.Load<Sprite>(SpritePaths.getRandomRock());
         }
 
         PolygonCollider2D c = gameObject.AddComponent<PolygonCollider2D>();
         c.isTrigger = true;
     }
 
-    
+
 }
 
 public static class SpritePaths
@@ -78,6 +86,16 @@ public static class SpritePaths
                                             "ArtContent/Cenarios/Lv4/006",
                                             "ArtContent/Cenarios/Lv4/007"};
 
+
+    public static string[] Rock_Sprites = {  "ArtContent/Rocks/001",
+                                             "ArtContent/Rocks/002",
+                                             "ArtContent/Rocks/003",
+                                             "ArtContent/Rocks/004",
+                                             "ArtContent/Rocks/005",
+                                             "ArtContent/Rocks/006",
+                                             "ArtContent/Rocks/007"};
+
+
     public static string getRandomLV1()
     {
         return LV1_Sprites[Random.Range(0, LV1_Sprites.Length)];
@@ -96,5 +114,10 @@ public static class SpritePaths
     public static string getRandomLV4()
     {
         return LV4_Sprites[Random.Range(0, LV4_Sprites.Length)];
+    }
+
+    public static string getRandomRock()
+    {
+        return Rock_Sprites[Random.Range(0, Rock_Sprites.Length)];
     }
 }

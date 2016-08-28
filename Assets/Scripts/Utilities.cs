@@ -55,7 +55,6 @@ public enum MovementType
     orbit
 }
 
-
 public class Tags
 {
     public static string EnergyPack = "EnergyPack";

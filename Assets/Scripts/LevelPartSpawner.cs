@@ -15,7 +15,7 @@ public class LevelPartSpawner : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            spawnPos = Camera.main.ViewportToWorldPoint(new Vector3(1f, 0.5f, -Camera.main.transform.position.z));
+            spawnPos = Camera.main.ViewportToWorldPoint(new Vector3(1.3f, 0.5f, -Camera.main.transform.position.z));
 
             SpawnNext();
         }
