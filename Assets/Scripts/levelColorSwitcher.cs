@@ -51,11 +51,14 @@ public class levelColorSwitcher : MonoBehaviour
     {
         while (true)
         {
-            int aux;
+            int aux = 0;
 
-            do
-                aux = Random.Range(0, lvCurr_Colors.Length);
-            while (aux == index);
+            if (lvCurr_Colors.Length > 1)
+            {
+                do
+                    aux = Random.Range(0, lvCurr_Colors.Length);
+                while (aux == index);
+            }
 
             index = aux;
 

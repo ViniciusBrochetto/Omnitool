@@ -29,10 +29,10 @@ public class TeleporterController : MonoBehaviour
 
         Vector3 viewportPos = Camera.main.WorldToViewportPoint(transform.position + new Vector3(move.x, move.y, 0f));
 
-        if (viewportPos.x > 0.1f && viewportPos.x < 0.9f)
+        if (viewportPos.x > 0.15f && viewportPos.x < 0.95f)
             transform.Translate(Vector3.right * move.x);
 
-        if (viewportPos.y > 0.1f && viewportPos.y < 0.9f)
+        if (viewportPos.y > 0.05f && viewportPos.y < 0.95f)
             transform.Translate(Vector3.up * move.y);
 
     }

@@ -3,15 +3,13 @@ using System.Collections;
 
 public class ObjectMover : MonoBehaviour
 {
-    public MovementType movementType;
-    public float STR_speed;
-    public float SIN_frequency;
-    public float SIN_amplitude;
-    public float ORB_radius;
+    public ObjMoverParams objMoverParams;
+
+    public Transform pos; 
 
     void Start()
     {
-        switch (movementType)
+        switch (objMoverParams.movementType)
         {
             case MovementType.straight:
                 StartCoroutine(MovementStraight());
@@ -23,11 +21,21 @@ public class ObjectMover : MonoBehaviour
                 StartCoroutine(MovemenSinHor());
                 break;
             case MovementType.orbit:
-                StartCoroutine(MovementOrbit());
+                pos.parent = transform.parent;
+                pos.position = transform.position;
+                transform.Translate(transform.right * objMoverParams.ORB_radius);
                 break;
             default:
                 StartCoroutine(MovementStraight());
                 break;
+        }
+    }
+
+    void Update()
+    {
+        if (objMoverParams.movementType == MovementType.orbit)
+        {
+            transform.RotateAround(pos.position, Vector3.forward, objMoverParams.ORB_speed * Time.deltaTime);
         }
     }
 
@@ -37,7 +45,7 @@ public class ObjectMover : MonoBehaviour
         {
             if (GameController.instance.gameState == GameState.Playing)
             {
-                transform.Translate(Vector2.left * STR_speed * Time.deltaTime);
+                transform.Translate(Vector2.left * objMoverParams.STR_speed * Time.deltaTime);
             }
             yield return new WaitForEndOfFrame();
         }
@@ -52,7 +60,7 @@ public class ObjectMover : MonoBehaviour
         {
             if (GameController.instance.gameState == GameState.Playing)
             {
-                float y = Mathf.Sin(t * SIN_frequency) * SIN_amplitude / 2f;
+                float y = Mathf.Sin(t * objMoverParams.SIN_frequency) * objMoverParams.SIN_amplitude / 2f;
                 transform.localPosition = pos + new Vector2(0f, y);
 
                 t += Time.deltaTime;
@@ -71,26 +79,7 @@ public class ObjectMover : MonoBehaviour
         {
             if (GameController.instance.gameState == GameState.Playing)
             {
-                float x = Mathf.Sin(t * SIN_frequency) * SIN_amplitude / 2f;
-                transform.localPosition = pos + new Vector2(x, 0f);
-
-                t += Time.deltaTime;
-            }
-
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    private IEnumerator MovementOrbit()
-    {
-        float t = 45f;
-        Vector2 pos = transform.localPosition;
-
-        while (true)
-        {
-            if (GameController.instance.gameState == GameState.Playing)
-            {
-                float x = Mathf.Sin(t * SIN_frequency) * SIN_amplitude / 2f;
+                float x = Mathf.Sin(t * objMoverParams.SIN_frequency) * objMoverParams.SIN_amplitude / 2f;
                 transform.localPosition = pos + new Vector2(x, 0f);
 
                 t += Time.deltaTime;

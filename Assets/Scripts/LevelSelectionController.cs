@@ -11,11 +11,13 @@ public class LevelSelectionController : MonoBehaviour
     public int currLevelSelected;
     public Image completionFill;
 
+    public AudioSource audioLuz;
+
     public List<GameObject> objectsToAnimate;
 
     void Start()
     {
-        CalculateCompletion();
+        StartCoroutine(CalculateCompletion());
     }
 
     void Update()
@@ -28,22 +30,14 @@ public class LevelSelectionController : MonoBehaviour
 
     public void LoadLevel(int level)
     {
-        GameController.instance.gameState = GameState.Playing;
+        GameController.instance.gameState = GameState.InMenus;
         GameController.instance.LoadLevel(level);
     }
 
-    //IEnumerator CheckLevelsUnlocked()
-    //{
-    //    float k = GameController.instance.playerKnowledge;
-    //    if (k >= (int)LevelKnowledgeToUnlock.level1)
-    //        btLv1.interactable = true;
-    //    if (k >= (int)LevelKnowledgeToUnlock.level2)
-    //        btLv2.interactable = true;
-    //    if (k >= (int)LevelKnowledgeToUnlock.level3)
-    //        btLv3.interactable = true;
-    //    if (k >= (int)LevelKnowledgeToUnlock.level4)
-    //        btLv4.interactable = true;
-    //}
+    public void SetLevel(int l)
+    {
+        GameController.instance.SetLevel(l);
+    }
 
     void SwitchLevel(bool dirRight)
     {
@@ -123,8 +117,10 @@ public class LevelSelectionController : MonoBehaviour
         float count = 0f;
         int lastIndex = -1;
 
-        while (count <= 1f)
+        while (count <= completion)
         {
+            count += Time.deltaTime;
+
             int indexCounted = (int)((float)count / 0.0625f);
 
             if (indexCounted > lastIndex)
@@ -133,30 +129,33 @@ public class LevelSelectionController : MonoBehaviour
                 {
                     int indexInList = objectsToAnimate.IndexOf(g);
 
-                    if (indexInList > lastIndex)
+                    if (indexInList >= lastIndex && indexInList <= indexCounted)
                     {
                         if (g.GetComponent<Button>())
                         {
-                            g.GetComponent<Button>().enabled = true;
+                            g.GetComponent<Button>().interactable = true;
                         }
                         else
                         {
                             g.SetActive(true);
                         }
+
+                        audioLuz.pitch = Mathf.Lerp(1f, 1.5f, (float)indexInList / (float)objectsToAnimate.Count);
+                        audioLuz.Stop();
+                        audioLuz.Play();
                     }
                 }
+
+                yield return new WaitForSeconds(0.25f);
 
                 lastIndex = indexCounted;
             }
 
 
-            count += Time.deltaTime / 4f;
             yield return new WaitForEndOfFrame();
         }
 
-
         #endregion
-
     }
 
     public void ReturnToMenu()

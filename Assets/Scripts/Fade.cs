@@ -8,6 +8,7 @@ public class Fade : MonoBehaviour
     public Image imgToFade;
 
     public bool from;
+    public bool loadLevel = true;
 
     private Color c1, c2;
 
@@ -53,8 +54,9 @@ public class Fade : MonoBehaviour
             t += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        
-        FindObjectOfType<LevelSelectionController>().LoadLevel(GameController.instance.levelSelected);
+
+        if (loadLevel)
+            FindObjectOfType<LevelSelectionController>().LoadLevel(GameController.instance.levelSelected);
 
         yield return null;
     }

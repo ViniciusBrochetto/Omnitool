@@ -7,8 +7,9 @@ public class GameController : MonoBehaviour
     public static GameController instance;
 
     public GameState gameState;
-    public float playerKnowledge = 0;
-    public float currentLevelKnowledgeNeed = 0;
+    public float playerKnowledge;
+    public float currentLevelKnowledgeNeed;
+    public float pastLevelsNeededKnowledge;
     public int levelSelected = -1;
 
 
@@ -20,8 +21,13 @@ public class GameController : MonoBehaviour
             instance = this;
 
             //Initialization
-            gameState = GameState.Playing;
-            playerKnowledge = 150;
+            gameState = GameState.InMenus;
+
+#if UNITY_STANDALONE
+            playerKnowledge = 0;
+            currentLevelKnowledgeNeed = 100f;
+#endif
+
         }
         else
         {
@@ -39,12 +45,15 @@ public class GameController : MonoBehaviour
                 currentLevelKnowledgeNeed = (float)LevelKnowledgeToUnlock.level2;
                 break;
             case 2:
+                pastLevelsNeededKnowledge += (float)LevelKnowledgeToUnlock.level2;
                 currentLevelKnowledgeNeed = (float)LevelKnowledgeToUnlock.level3;
                 break;
             case 3:
+                pastLevelsNeededKnowledge += (float)LevelKnowledgeToUnlock.level3;
                 currentLevelKnowledgeNeed = (float)LevelKnowledgeToUnlock.level4;
                 break;
             case 4:
+                pastLevelsNeededKnowledge += (float)LevelKnowledgeToUnlock.level4;
                 currentLevelKnowledgeNeed = (float)LevelKnowledgeToUnlock.level5;
                 break;
             default:

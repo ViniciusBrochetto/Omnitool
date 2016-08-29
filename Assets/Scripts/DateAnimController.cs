@@ -34,7 +34,7 @@ public class DateAnimController : MonoBehaviour
 
     public void EndAnimation()
     {
-        if (GameController.instance.levelSelected == 1)
+        if (GameController.instance.levelSelected == 1 && GameController.instance.playerKnowledge == 0)
         {
             GetComponent<Animator>().SetTrigger("Tutorial");
         }
@@ -50,6 +50,8 @@ public class DateAnimController : MonoBehaviour
         {
             g.SetActive(true);
         }
+
+        GameController.instance.gameState = GameState.Playing;
 
         Destroy(gameObject);
     }

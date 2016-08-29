@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class LevelPartSpawner : MonoBehaviour
 {
+    public int startWithID = -1;
+
     public static LevelPartSpawner instance;
 
     public List<LevelPartController> LevelParts;
@@ -27,11 +29,20 @@ public class LevelPartSpawner : MonoBehaviour
 
     public void SpawnNext()
     {
-        int r = Random.Range(0, LevelParts.Count);
+        int r;
+        if (startWithID == -1)
+            r = Random.Range(0, LevelParts.Count);
+        else
+        {
+            r = startWithID - 1;
+            startWithID = -1;
+        }
+
         GameObject g;
 
         g = (GameObject)Instantiate(LevelParts[r].gameObject, spawnPos, Quaternion.identity);
 
+        g.transform.parent = this.transform;
         g.SetActive(true);
     }
 }

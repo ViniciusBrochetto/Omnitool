@@ -4,13 +4,14 @@ using System.Collections;
 public class GameJoltManager : MonoBehaviour
 {
     bool isSignedIn;
+    public bool requestOnEnter;
 
     // Use this for initialization
     void Start()
     {
         isSignedIn = GameJolt.API.Manager.Instance.CurrentUser != null;
 
-        if (!isSignedIn)
+        if (!isSignedIn && requestOnEnter)
             SignIn();
     }
 

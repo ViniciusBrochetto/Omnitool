@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     //privates
-    private bool isAlive;
+    private bool isAccelerating;
     private bool isTeleporting;
     private CustomGravity cGravity;
 
@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
     public AudioSource audioCrash1;
     public AudioSource audioCrash2;
     public AudioSource audioWarp;
+    public AudioSource audioBG;
+    public AudioSource audioEngines;
 
     public ParticleSystem ptclDamage;
     public GameObject ptclRocks;
@@ -41,7 +43,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        isAlive = true;
+        isAccelerating = true;
         cGravity = GetComponent<CustomGravity>();
 
         ptclDamage.randomSeed = 0;
@@ -51,22 +53,53 @@ public class PlayerController : MonoBehaviour
     {
         if (GameController.instance.gameState == GameState.Playing)
         {
+            imgEnergy.fillAmount = Mathf.Min(energy / maxEnergy, 1f);
+            imgKnowledge.fillAmount = Mathf.Min((GameController.instance.playerKnowledge - GameController.instance.pastLevelsNeededKnowledge) / (GameController.instance.currentLevelKnowledgeNeed - GameController.instance.pastLevelsNeededKnowledge), 1f);
+
+
+            if (energy <= 0 || GameController.instance.playerKnowledge >= GameController.instance.currentLevelKnowledgeNeed)
+            {
+                cGravity.enabled = false;
+                FindObjectOfType<AnimEndLevel>().StartAnimation();
+
+                anmEngineBack.SetBool("BurningBack", true);
+                anmEngineBottom1.SetBool("BurningBack", true);
+                anmEngineBottom2.SetBool("BurningBack", true);
+
+                audioEngines.volume = 0.25f;
+
+                return;
+            }
+
             energy -= energyConsumption * (Time.deltaTime / Time.timeScale);
 
             if (isTeleporting)
                 energy -= teleportEnergyConsumption * (Time.deltaTime / Time.timeScale);
 
+            InputHandler();
 
-            if (energy <= 0)
+
+            if (isTeleporting)
             {
-                //TODO -- ENDGAME
+                audioBG.pitch = Mathf.Lerp(audioBG.pitch, 0.25f, Time.deltaTime * 10f);
+                audioEngines.pitch = Mathf.Lerp(audioEngines.pitch, 0.25f, Time.deltaTime * 10f);
+            }
+            else
+            {
+
+                audioBG.pitch = Mathf.Lerp(audioBG.pitch, 1f, Time.deltaTime * 5f);
+                audioEngines.pitch = Mathf.Lerp(audioEngines.pitch, 1.2f, Time.deltaTime * 5f);
             }
 
-            imgEnergy.fillAmount = Mathf.Min(energy / maxEnergy, 1f);
+            if (isAccelerating)
+            {
+                audioEngines.volume = Mathf.Lerp(audioEngines.volume, 1f, Time.deltaTime * 15f);
+            }
+            else
+            {
+                audioEngines.volume = Mathf.Lerp(audioEngines.volume, 0, Time.deltaTime * 15f);
+            }
 
-            imgKnowledge.fillAmount = Mathf.Min(GameController.instance.playerKnowledge / GameController.instance.currentLevelKnowledgeNeed, 1f);
-
-            InputHandler();
         }
     }
 
@@ -88,7 +121,7 @@ public class PlayerController : MonoBehaviour
                 move.x = h * Time.deltaTime * hSpeed;
             }
 
-            if (Input.GetButtonDown(Buttons.Teleport))
+            if (Input.GetButtonDown(Buttons.Teleport) && energy > 10)
             {
                 Time.timeScale = 1f * timeSlowdown;
                 teleportController.Activate();
@@ -102,14 +135,12 @@ public class PlayerController : MonoBehaviour
                 cGravity.AddForce(move.x, move.y);
             }
 
+            isAccelerating = move.magnitude > 0f;
+
             if (anmEngineBack.isInitialized)
             {
                 if (Input.GetAxis(Buttons.Move_Horizontal) > 0)
                 {
-                    //float AngleRad = Mathf.Atan2(Input.GetAxis(Buttons.Move_Vertical), Input.GetAxis(Buttons.Move_Horizontal));
-                    //float AngleDeg = (180 / Mathf.PI) * AngleRad;
-                    //engineAxis.transform.rotation = Quaternion.Lerp(engineAxis.transform.rotation, Quaternion.Euler(0, 0, AngleDeg), Time.deltaTime * 10f);
-
                     anmEngineBack.SetBool("BurningBack", true);
                 }
                 else
@@ -131,22 +162,33 @@ public class PlayerController : MonoBehaviour
                     anmEngineBottom2.SetBool("BurningBack", false);
                 }
             }
+
         }
         else
         {
-            if (Input.GetButtonUp(Buttons.Teleport))
+            if (energy < 10)
             {
-                if (anmEngineBottom1.isInitialized && anmEngineBottom2.isInitialized && anmEngineBack.isInitialized)
-                {
-                    anmEngineBack.SetBool("BurningBack", false);
-                    anmEngineBottom1.SetBool("BurningBack", false);
-                    anmEngineBottom2.SetBool("BurningBack", false);
-                }
-                anmPlayer.SetTrigger("Teleport");
+                isTeleporting = false;
+                cGravity.freezeMovement = false;
                 teleportController.Deactivate();
                 Time.timeScale = 1f;
+            }
+            else
+            {
+                if (Input.GetButtonUp(Buttons.Teleport))
+                {
+                    if (anmEngineBottom1.isInitialized && anmEngineBottom2.isInitialized && anmEngineBack.isInitialized)
+                    {
+                        anmEngineBack.SetBool("BurningBack", false);
+                        anmEngineBottom1.SetBool("BurningBack", false);
+                        anmEngineBottom2.SetBool("BurningBack", false);
+                    }
+                    anmPlayer.SetTrigger("Teleport");
+                    teleportController.Deactivate();
+                    Time.timeScale = 1f;
 
-                audioWarp.PlayOneShot(audioWarp.clip);
+                    audioWarp.PlayOneShot(audioWarp.clip);
+                }
             }
         }
     }
@@ -154,8 +196,8 @@ public class PlayerController : MonoBehaviour
     public void EndTeleport()
     {
         isTeleporting = false;
-        transform.position = teleportController.transform.position;
         cGravity.freezeMovement = false;
+        transform.position = teleportController.transform.position;
     }
 
     void OnTriggerEnter2D(Collider2D other)

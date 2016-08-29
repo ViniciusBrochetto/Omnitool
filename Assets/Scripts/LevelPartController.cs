@@ -33,14 +33,24 @@ public class LevelPartController : MonoBehaviour
     {
         foreach (Obstacle o in obstacles)
         {
-            GameObject g = (GameObject)Instantiate(Resources.Load("Prefabs/" + o.type.ToString()), o.position.position, Quaternion.identity);
-            g.transform.parent = transform;
+            if (o != null)
+            {
+                GameObject g = (GameObject)Instantiate(Resources.Load("Prefabs/Obstacle"), o.position.position, o.position.rotation);
+                g.transform.localScale = Vector3.one * o.size;
+                g.transform.parent = transform;
+                g.GetComponent<ObjectMover>().objMoverParams = o.objMoverParams;
+            }
         }
 
         foreach (Collectible c in collectibles)
         {
-            GameObject g = (GameObject)Instantiate(Resources.Load("Prefabs/" + c.type.ToString()), c.position.position, Quaternion.identity);
-            g.transform.parent = transform;
+            if (c != null)
+            {
+                GameObject g = (GameObject)Instantiate(Resources.Load("Prefabs/" + c.type.ToString()), c.position.position, c.position.rotation);
+                g.transform.localScale = Vector3.one * c.size;
+                g.transform.parent = transform;
+                g.GetComponent<ObjectMover>().objMoverParams = c.objMoverParams;
+            }
         }
     }
 }
