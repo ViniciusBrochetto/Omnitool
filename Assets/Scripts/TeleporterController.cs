@@ -6,7 +6,7 @@ public class TeleporterController : MonoBehaviour
     public float hSpeed;
     public float vSpeed;
 
-    void Update()
+    void LateUpdate()
     {
         MoveHandler();
     }
@@ -27,6 +27,13 @@ public class TeleporterController : MonoBehaviour
         move.y = Input.GetAxis(Buttons.Move_Vertical) * vSpeed * Time.deltaTime;
         move.x = Input.GetAxis(Buttons.Move_Horizontal) * hSpeed * Time.deltaTime;
 
-        transform.Translate(move);
+        Vector3 viewportPos = Camera.main.WorldToViewportPoint(transform.position + new Vector3(move.x, move.y, 0f));
+
+        if (viewportPos.x > 0.1f && viewportPos.x < 0.9f)
+            transform.Translate(Vector3.right * move.x);
+
+        if (viewportPos.y > 0.1f && viewportPos.y < 0.9f)
+            transform.Translate(Vector3.up * move.y);
+
     }
 }

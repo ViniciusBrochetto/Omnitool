@@ -32,7 +32,7 @@ public class LevelSelectionController : MonoBehaviour
 
     void CheckLevelsUnlocked()
     {
-        int k = GameController.instance.playerKnowledge;
+        float k = GameController.instance.playerKnowledge;
         if (k >= (int)LevelKnowledgeToUnlock.level1)
             btLv1.interactable = true;
         if (k >= (int)LevelKnowledgeToUnlock.level2)
@@ -58,7 +58,7 @@ public class LevelSelectionController : MonoBehaviour
     void CalculateCompletion()
     {
         float completion = 0;
-        int k = GameController.instance.playerKnowledge;
+        float k = GameController.instance.playerKnowledge;
 
         if (k >= (int)LevelKnowledgeToUnlock.level2)
             completion += 0.33f;

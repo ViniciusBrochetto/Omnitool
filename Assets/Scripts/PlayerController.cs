@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     public float teleportEnergyConsumption;
     public float damageEnergyConsumption;
     public float energyPackGain;
+    public float knowlegeGain;
 
     public AudioSource audioCrash1;
     public AudioSource audioCrash2;
@@ -62,7 +63,8 @@ public class PlayerController : MonoBehaviour
             }
 
             imgEnergy.fillAmount = Mathf.Min(energy / maxEnergy, 1f);
-            imgKnowledge.fillAmount = Mathf.Min(GameController.instance.playerKnowledge / (int)LevelKnowledgeToUnlock.level1);
+
+            imgKnowledge.fillAmount = Mathf.Min(GameController.instance.playerKnowledge / GameController.instance.currentLevelKnowledgeNeed, 1f);
 
             InputHandler();
         }
@@ -100,37 +102,46 @@ public class PlayerController : MonoBehaviour
                 cGravity.AddForce(move.x, move.y);
             }
 
-            if (Input.GetAxis(Buttons.Move_Horizontal) > 0)
+            if (anmEngineBack.isInitialized)
             {
-                //float AngleRad = Mathf.Atan2(Input.GetAxis(Buttons.Move_Vertical), Input.GetAxis(Buttons.Move_Horizontal));
-                //float AngleDeg = (180 / Mathf.PI) * AngleRad;
-                //engineAxis.transform.rotation = Quaternion.Lerp(engineAxis.transform.rotation, Quaternion.Euler(0, 0, AngleDeg), Time.deltaTime * 10f);
+                if (Input.GetAxis(Buttons.Move_Horizontal) > 0)
+                {
+                    //float AngleRad = Mathf.Atan2(Input.GetAxis(Buttons.Move_Vertical), Input.GetAxis(Buttons.Move_Horizontal));
+                    //float AngleDeg = (180 / Mathf.PI) * AngleRad;
+                    //engineAxis.transform.rotation = Quaternion.Lerp(engineAxis.transform.rotation, Quaternion.Euler(0, 0, AngleDeg), Time.deltaTime * 10f);
 
-                anmEngineBack.SetBool("BurningBack", true);
-            }
-            else
-            {
-                anmEngineBack.SetBool("BurningBack", false);
+                    anmEngineBack.SetBool("BurningBack", true);
+                }
+                else
+                {
+                    anmEngineBack.SetBool("BurningBack", false);
+                }
             }
 
-            if (Input.GetAxis(Buttons.Move_Vertical) > 0)
+            if (anmEngineBottom1.isInitialized && anmEngineBottom2.isInitialized)
             {
-                anmEngineBottom1.SetBool("BurningBack", true);
-                anmEngineBottom2.SetBool("BurningBack", true);
-            }
-            else
-            {
-                anmEngineBottom1.SetBool("BurningBack", false);
-                anmEngineBottom2.SetBool("BurningBack", false);
+                if (Input.GetAxis(Buttons.Move_Vertical) > 0)
+                {
+                    anmEngineBottom1.SetBool("BurningBack", true);
+                    anmEngineBottom2.SetBool("BurningBack", true);
+                }
+                else
+                {
+                    anmEngineBottom1.SetBool("BurningBack", false);
+                    anmEngineBottom2.SetBool("BurningBack", false);
+                }
             }
         }
         else
         {
             if (Input.GetButtonUp(Buttons.Teleport))
             {
-                anmEngineBack.SetBool("BurningBack", false);
-                anmEngineBottom1.SetBool("BurningBack", false);
-                anmEngineBottom2.SetBool("BurningBack", false);
+                if (anmEngineBottom1.isInitialized && anmEngineBottom2.isInitialized && anmEngineBack.isInitialized)
+                {
+                    anmEngineBack.SetBool("BurningBack", false);
+                    anmEngineBottom1.SetBool("BurningBack", false);
+                    anmEngineBottom2.SetBool("BurningBack", false);
+                }
                 anmPlayer.SetTrigger("Teleport");
                 teleportController.Deactivate();
                 Time.timeScale = 1f;
@@ -171,7 +182,13 @@ public class PlayerController : MonoBehaviour
             energy = Mathf.Min(energy, maxEnergy);
 
             Destroy(other.gameObject);
-            //TODO - Energy Effects
+        }
+        else if (other.tag == Tags.Knowledge)
+        {
+            GameController.instance.playerKnowledge += knowlegeGain;
+            GameController.instance.playerKnowledge = Mathf.Min(GameController.instance.playerKnowledge, GameController.instance.currentLevelKnowledgeNeed);
+
+            Destroy(other.gameObject);
         }
     }
 }
