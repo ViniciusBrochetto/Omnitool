@@ -21,7 +21,7 @@ public class GameController : MonoBehaviour
 
             //Initialization
             gameState = GameState.Playing;
-            playerKnowledge = 0;
+            playerKnowledge = 150;
         }
         else
         {
@@ -36,16 +36,16 @@ public class GameController : MonoBehaviour
         switch (level)
         {
             case 1:
-                currentLevelKnowledgeNeed = (float)LevelKnowledgeToUnlock.level1;
-                break;
-            case 2:
                 currentLevelKnowledgeNeed = (float)LevelKnowledgeToUnlock.level2;
                 break;
-            case 3:
+            case 2:
                 currentLevelKnowledgeNeed = (float)LevelKnowledgeToUnlock.level3;
                 break;
-            case 4:
+            case 3:
                 currentLevelKnowledgeNeed = (float)LevelKnowledgeToUnlock.level4;
+                break;
+            case 4:
+                currentLevelKnowledgeNeed = (float)LevelKnowledgeToUnlock.level5;
                 break;
             default:
                 currentLevelKnowledgeNeed = 0f;
@@ -54,6 +54,11 @@ public class GameController : MonoBehaviour
 
 
         SceneManager.LoadScene(Scenes.MainGame);
+    }
+
+    public void SetLevel(int l)
+    {
+        levelSelected = l;
     }
 
     public static void SetGameState(GameState state)

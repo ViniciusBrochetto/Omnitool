@@ -2,17 +2,19 @@
 using System.Collections;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public class LevelSelectionController : MonoBehaviour
 {
-    public Button btLv1, btLv2, btLv3, btLv4;
+    public Button btLv1, btLv2, btLv3, btLv4, btLv5;
     public Animator anmLevelSelector;
     public int currLevelSelected;
     public Image completionFill;
 
+    public List<GameObject> objectsToAnimate;
+
     void Start()
     {
-        CheckLevelsUnlocked();
         CalculateCompletion();
     }
 
@@ -30,18 +32,18 @@ public class LevelSelectionController : MonoBehaviour
         GameController.instance.LoadLevel(level);
     }
 
-    void CheckLevelsUnlocked()
-    {
-        float k = GameController.instance.playerKnowledge;
-        if (k >= (int)LevelKnowledgeToUnlock.level1)
-            btLv1.interactable = true;
-        if (k >= (int)LevelKnowledgeToUnlock.level2)
-            btLv2.interactable = true;
-        if (k >= (int)LevelKnowledgeToUnlock.level3)
-            btLv3.interactable = true;
-        if (k >= (int)LevelKnowledgeToUnlock.level4)
-            btLv4.interactable = true;
-    }
+    //IEnumerator CheckLevelsUnlocked()
+    //{
+    //    float k = GameController.instance.playerKnowledge;
+    //    if (k >= (int)LevelKnowledgeToUnlock.level1)
+    //        btLv1.interactable = true;
+    //    if (k >= (int)LevelKnowledgeToUnlock.level2)
+    //        btLv2.interactable = true;
+    //    if (k >= (int)LevelKnowledgeToUnlock.level3)
+    //        btLv3.interactable = true;
+    //    if (k >= (int)LevelKnowledgeToUnlock.level4)
+    //        btLv4.interactable = true;
+    //}
 
     void SwitchLevel(bool dirRight)
     {
@@ -55,37 +57,106 @@ public class LevelSelectionController : MonoBehaviour
         anmLevelSelector.SetBool("lv" + currLevelSelected.ToString(), true);
     }
 
-    void CalculateCompletion()
+    IEnumerator CalculateCompletion()
     {
         float completion = 0;
         float k = GameController.instance.playerKnowledge;
+        float aux;
+        float aux2;
+        bool calculated = false;
+
+        #region Calculate
 
         if (k >= (int)LevelKnowledgeToUnlock.level2)
-            completion += 0.33f;
+            completion += 0.25f;
         else
         {
-            completion += Mathf.Lerp((int)LevelKnowledgeToUnlock.level1, (int)LevelKnowledgeToUnlock.level2, k);
-            completionFill.fillAmount = completion;
-            return;
+            aux = (float)LevelKnowledgeToUnlock.level1;
+            aux2 = (int)LevelKnowledgeToUnlock.level2;
+            completion += ((k - aux) / (aux2 - aux)) / 4f;
+            calculated = true;
+        }
+        if (!calculated)
+        {
+            if (k >= (int)LevelKnowledgeToUnlock.level3)
+                completion += 0.25f;
+            else
+            {
+                aux = (float)LevelKnowledgeToUnlock.level2;
+                aux2 = (int)LevelKnowledgeToUnlock.level3;
+                completion += ((k - aux) / (aux2 - aux)) / 4f;
+                calculated = true;
+            }
+
         }
 
-        if (k >= (int)LevelKnowledgeToUnlock.level3)
-            completion += 0.33f;
-        else
+        if (!calculated)
         {
-            completion += Mathf.Lerp((int)LevelKnowledgeToUnlock.level2, (int)LevelKnowledgeToUnlock.level3, k);
-            completionFill.fillAmount = completion;
-            return;
+            if (k >= (int)LevelKnowledgeToUnlock.level4)
+                completion += 0.25f;
+            else
+            {
+                aux = (float)LevelKnowledgeToUnlock.level3;
+                aux2 = (int)LevelKnowledgeToUnlock.level4;
+                completion += ((k - aux) / (aux2 - aux)) / 4f;
+                calculated = true;
+            }
         }
 
-        if (k >= (int)LevelKnowledgeToUnlock.level4)
-            completion += 0.34f;
-        else
+        if (!calculated)
         {
-            completion += Mathf.Lerp((int)LevelKnowledgeToUnlock.level3, (int)LevelKnowledgeToUnlock.level4, k);
-            completionFill.fillAmount = completion;
-            return;
+            if (k >= (int)LevelKnowledgeToUnlock.level5)
+                completion += 0.25f;
+            else
+            {
+                aux = (float)LevelKnowledgeToUnlock.level4;
+                aux2 = (int)LevelKnowledgeToUnlock.level5;
+                completion += ((k - aux) / (aux2 - aux)) / 4f;
+                calculated = true;
+            }
         }
+
+        #endregion
+
+        #region Animate
+
+        float count = 0f;
+        int lastIndex = -1;
+
+        while (count <= 1f)
+        {
+            int indexCounted = (int)((float)count / 0.0625f);
+
+            if (indexCounted > lastIndex)
+            {
+                foreach (GameObject g in objectsToAnimate)
+                {
+                    int indexInList = objectsToAnimate.IndexOf(g);
+
+                    if (indexInList > lastIndex)
+                    {
+                        if (g.GetComponent<Button>())
+                        {
+                            g.GetComponent<Button>().enabled = true;
+                        }
+                        else
+                        {
+                            g.SetActive(true);
+                        }
+                    }
+                }
+
+                lastIndex = indexCounted;
+            }
+
+
+            count += Time.deltaTime / 4f;
+            yield return new WaitForEndOfFrame();
+        }
+
+
+        #endregion
+
     }
 
     public void ReturnToMenu()

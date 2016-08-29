@@ -30,7 +30,8 @@ public enum LevelKnowledgeToUnlock
     level1 = 0,
     level2 = 100,
     level3 = 200,
-    level4 = 400
+    level4 = 400,
+    level5 = 500
 }
 
 public enum ObstacleType
