@@ -50,6 +50,9 @@ public class LevelPartController : MonoBehaviour
                 g.transform.localScale = Vector3.one * c.size;
                 g.transform.parent = transform;
                 g.GetComponent<ObjectMover>().objMoverParams = c.objMoverParams;
+
+                if (c.type == CollectibleType.Monolito)
+                    g.name = "MonolithToAnimate";
             }
         }
     }

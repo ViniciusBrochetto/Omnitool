@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     //privates
+    private bool gameEndSequence = false;
     private bool isAccelerating;
     private bool isTeleporting;
     private CustomGravity cGravity;
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public AudioSource audioWarp;
     public AudioSource audioBG;
     public AudioSource audioEngines;
+    public AudioSource audioCollect;
 
     public ParticleSystem ptclDamage;
     public GameObject ptclRocks;
@@ -54,27 +56,47 @@ public class PlayerController : MonoBehaviour
         if (GameController.instance.gameState == GameState.Playing)
         {
             imgEnergy.fillAmount = Mathf.Min(energy / maxEnergy, 1f);
-            imgKnowledge.fillAmount = Mathf.Min((GameController.instance.playerKnowledge - GameController.instance.pastLevelsNeededKnowledge) / (GameController.instance.currentLevelKnowledgeNeed - GameController.instance.pastLevelsNeededKnowledge), 1f);
 
+            if (GameController.instance.levelSelected != 5)
+                imgKnowledge.fillAmount = Mathf.Min((GameController.instance.playerKnowledge - GameController.instance.pastLevelsNeededKnowledge) / (GameController.instance.currentLevelKnowledgeNeed - GameController.instance.pastLevelsNeededKnowledge), 1f);
+            else
+            {
+                GameController.instance.playerScore += 5f * Time.deltaTime;
+                imgKnowledge.transform.parent.gameObject.SetActive(false);
+            }
+
+
+            if (gameEndSequence)
+                return;
 
             if (energy <= 0 || GameController.instance.playerKnowledge >= GameController.instance.currentLevelKnowledgeNeed)
             {
-                cGravity.enabled = false;
-                FindObjectOfType<AnimEndLevel>().StartAnimation();
+                if (GameController.instance.levelSelected < 4 || energy <= 0)
+                {
+                    cGravity.enabled = false;
+                    FindObjectOfType<AnimEndLevel>().StartAnimation(false);
 
-                anmEngineBack.SetBool("BurningBack", true);
-                anmEngineBottom1.SetBool("BurningBack", true);
-                anmEngineBottom2.SetBool("BurningBack", true);
+                    anmEngineBack.SetBool("BurningBack", true);
+                    anmEngineBottom1.SetBool("BurningBack", true);
+                    anmEngineBottom2.SetBool("BurningBack", true);
 
-                audioEngines.volume = 0.25f;
-
-                return;
+                    audioEngines.volume = 0.25f;
+                    gameEndSequence = true;
+                    return;
+                }
+                else if (GameController.instance.levelSelected != 5)
+                {
+                    LevelPartSpawner.instance.spawnMonolith = true;
+                }
             }
 
-            energy -= energyConsumption * (Time.deltaTime / Time.timeScale);
+            if (LevelPartSpawner.instance == null || !LevelPartSpawner.instance.spawnMonolith == true)
+            {
+                energy -= energyConsumption * (Time.deltaTime / Time.timeScale);
 
-            if (isTeleporting)
-                energy -= teleportEnergyConsumption * (Time.deltaTime / Time.timeScale);
+                if (isTeleporting)
+                    energy -= teleportEnergyConsumption * (Time.deltaTime / Time.timeScale);
+            }
 
             InputHandler();
 
@@ -222,15 +244,43 @@ public class PlayerController : MonoBehaviour
             energy += energyPackGain;
 
             energy = Mathf.Min(energy, maxEnergy);
+            audioCollect.Play();
 
             Destroy(other.gameObject);
         }
         else if (other.tag == Tags.Knowledge)
         {
-            GameController.instance.playerKnowledge += knowlegeGain;
-            GameController.instance.playerKnowledge = Mathf.Min(GameController.instance.playerKnowledge, GameController.instance.currentLevelKnowledgeNeed);
+
+            if (GameController.instance.levelSelected != 5)
+            {
+                GameController.instance.playerKnowledge += knowlegeGain;
+                GameController.instance.playerKnowledge = Mathf.Min(GameController.instance.playerKnowledge, GameController.instance.currentLevelKnowledgeNeed);
+            }
+            else
+            {
+                GameController.instance.playerScore += knowlegeGain;
+            }
+
+
+            audioCollect.Play();
 
             Destroy(other.gameObject);
+        }
+        else if (other.tag == Tags.Monolith)
+        {
+            other.GetComponent<BoxCollider2D>().enabled = false;
+
+            cGravity.enabled = false;
+            FindObjectOfType<AnimEndLevel>().StartAnimation(true);
+
+            anmEngineBack.SetBool("BurningBack", true);
+            anmEngineBottom1.SetBool("BurningBack", true);
+            anmEngineBottom2.SetBool("BurningBack", true);
+
+            audioEngines.volume = 0.25f;
+            gameEndSequence = true;
+
+            return;
         }
     }
 }

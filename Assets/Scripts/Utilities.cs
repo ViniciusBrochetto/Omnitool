@@ -38,6 +38,7 @@ public enum CollectibleType
 {
     EnergyPack,
     Knowledge,
+    Monolito
 }
 
 public enum MovementType
@@ -53,6 +54,7 @@ public class Tags
     public static string EnergyPack = "EnergyPack";
     public static string Obstacle = "Obstacle";
     public static string Knowledge = "Knowledge";
+    public static string Monolith = "Monolith";
 }
 
 

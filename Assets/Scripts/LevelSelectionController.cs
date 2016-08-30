@@ -11,6 +11,8 @@ public class LevelSelectionController : MonoBehaviour
     public int currLevelSelected;
     public Image completionFill;
 
+    public Text txtTopScore;
+
     public AudioSource audioLuz;
 
     public List<GameObject> objectsToAnimate;
@@ -26,6 +28,8 @@ public class LevelSelectionController : MonoBehaviour
             SwitchLevel(true);
         else if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow))
             SwitchLevel(false);
+
+        txtTopScore.text = ((int)(GameController.instance.playerTopScore)).ToString();
     }
 
     public void LoadLevel(int level)
@@ -121,6 +125,9 @@ public class LevelSelectionController : MonoBehaviour
         {
             count += Time.deltaTime;
 
+            if (count > completion)
+                count = completion;
+
             int indexCounted = (int)((float)count / 0.0625f);
 
             if (indexCounted > lastIndex)
@@ -146,7 +153,7 @@ public class LevelSelectionController : MonoBehaviour
                     }
                 }
 
-                yield return new WaitForSeconds(0.25f);
+                yield return new WaitForSeconds(0.15f);
 
                 lastIndex = indexCounted;
             }

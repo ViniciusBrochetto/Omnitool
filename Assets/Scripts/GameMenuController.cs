@@ -31,7 +31,7 @@ public class GameMenuController : MonoBehaviour
         GameController.SetGameState(GameState.InMenus);
         SaveGame();
 
-        SceneManager.LoadScene(Scenes.MainMenu);
+        SceneManager.LoadScene(Scenes.LevelSelection);
     }
 
     public void SaveGame()
